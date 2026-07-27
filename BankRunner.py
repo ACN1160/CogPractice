@@ -35,6 +35,12 @@ class bankApp():
         name, password = bankApp.myLogin()
         if name is not None:
             bankApp.printMessage("Login successful")
+            if user(name,password).name == "admin":
+                bankApp.printMessage("Welcome admin")
+                admin(name=name, password=password)
+            else:
+                bankApp.printMessage("Welcome user")
+                user(name=name, password=password)
         else:
             bankApp.printMessage("Login failed")
 
