@@ -9,6 +9,10 @@ class user():
 class admin(user):
     def __init__(self, name, password):
         super().__init__(name, password)
+    def UserList(self):
+        print("User List")
+        for key in bankApp.DB:
+            print(key)
 
 
 class bankApp():
@@ -37,7 +41,7 @@ class bankApp():
             bankApp.printMessage("Login successful")
             if user(name,password).name == "admin":
                 bankApp.printMessage("Welcome admin")
-                admin(name=name, password=password)
+                admin(name=name, password=password).UserList()
             else:
                 bankApp.printMessage("Welcome user")
                 user(name=name, password=password)
