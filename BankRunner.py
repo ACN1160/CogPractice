@@ -29,6 +29,11 @@ class user():
             print("Password is not valid")
             return False
 
+    def UserList(self):
+        print("User List")
+        for key in bankApp.DB.keys():
+            print(f"Username: {key}")
+
 class admin(user):
     def __init__(self, name, password):
         super().__init__(name, password)
@@ -100,9 +105,9 @@ class bankApp():
                 else:
                     bankApp.printMessage("Welcome user")
                     user_user = user(name=name, password=password)
-                    bankApp.printMessage("What would you like to do? 1. Update Username 2. Update Password 3. Exit")
+                    bankApp.printMessage("What would you like to do? 1. Update Username 2. Update Password 3. View User List 4. Exit")
                     choice = input()
-                    while(choice != "3"):
+                    while(choice != "4"):
                         if choice == "1":
                             while True:
                                 bankApp.printMessage("Enter new username")
@@ -115,6 +120,8 @@ class bankApp():
                                 new_password = input()
                                 if user_user.updatePassword(new_password):
                                     break
+                        elif choice == "3":
+                            user_user.UserList()
                         else:
                             bankApp.printMessage("Invalid choice")
                         bankApp.printMessage("What would you like to do? 1. Update Username 2. Update Password 3. Exit")
