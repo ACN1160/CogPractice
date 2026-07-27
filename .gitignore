@@ -1,0 +1,51 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.cache
+*.ncb
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.VC.opendb
+TestResults/
+[Bb]in/
+[Oo]bj/
+[Tt]est[Rr]esult*/
+*.log
+*.vspscc
+*.vssscc
+_ReSharper*/
+*.resharper
+*.dotCover
+*.dbmdl
+*.bak
+*.backup
+*.swp
+*.ide
+*.userprefs
+
+# Build results
+*.dll
+*.exe
+*.app
+*.appx
+*.msi
+*.cab
+*.zip
+*.7z
+*.rar
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.DS_Store
+ehthumbs.db
+Icon?
