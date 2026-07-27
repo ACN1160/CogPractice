@@ -11,8 +11,8 @@ class admin(user):
         super().__init__(name, password)
     def UserList(self):
         print("User List")
-        for key in bankApp.DB:
-            print(key)
+        for key, value in bankApp.DB.items():
+            print(f"Username: {key}, Password: {value}")
 
 
 class bankApp():
