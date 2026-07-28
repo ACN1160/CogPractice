@@ -16,4 +16,4 @@ EXPOSE 5000
 ENV FLASK_APP wsgi.py
 
 # Run app.py when the container launches
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:app"]
+CMD ["gunicorn", "--workers", "2", "--timeout", "60", "--bind", "0.0.0.0:5000", "wsgi:app"]

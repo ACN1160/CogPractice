@@ -1,9 +1,8 @@
-version: '3.8'
 
 services:
   web:
     build: .
-    command: gunicorn --bind 0.0.0.0:5000 wsgi:app
+    command: gunicorn --workers 2 --timeout 60 --bind 0.0.0.0:5000 wsgi:app
     volumes:
       - .:/app
     ports:
