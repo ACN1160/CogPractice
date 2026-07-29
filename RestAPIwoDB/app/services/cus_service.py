@@ -25,3 +25,6 @@ class CustomerService:
         last_name = data.get('lastname') if 'lastname' in data else None
         email = data.get('email') if 'email' in data else None
         return self._repo.update_customer(id, first_name, last_name, email)
+
+    def delete_customer(self, customer_id):
+            return self._repo.delete_customer(customer_id)

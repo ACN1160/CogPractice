@@ -1,6 +1,6 @@
 from flask import Flask
 from app.config import getconfig
-from app.controllers.controller import Bank_main
+from app.controllers import Bank_main
 from app.repo.repo_checking import CheckingRepo
 from app.repo.repo_customers import CustomerRepo
 from app.repo.repo_employees import EmployeeRepo

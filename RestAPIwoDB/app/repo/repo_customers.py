@@ -25,3 +25,10 @@ class CustomerRepo():
             customer.email = customer_email
         customer.save()
         return customer
+
+    def delete_customer(self, cus_id):
+        customer = customers.objects(id=cus_id).first()
+        if customer is None:
+            return None
+        customer.delete()
+        return customer
