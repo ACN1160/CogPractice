@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, current_app, jsonify, make_response
+from flask import Blueprint, abort, current_app, jsonify, make_response, request
 
 Bank_main = Blueprint('main', __name__)
 
@@ -15,6 +15,18 @@ def customer(id):
     if customer is None:
         abort(404)
     return make_response(jsonify(customer.to_dict()))
+
+
+@Bank_main.route('/customers/<string:firstname>/<string:lastname>/<string:customer>', methods=['POST', 'PUT'])
+def customer_action(firstname, lastname, customer):
+    if request.method == 'POST':
+        created_customer = current_app.cus_service.add_customer(firstname, lastname, customer)
+        return make_response(jsonify(created_customer.to_dict()), 201)
+
+    updated_customer = current_app.cus_service.update_customer(firstname, lastname, customer)
+    if updated_customer is None:
+        abort(404)
+    return make_response(jsonify(updated_customer.to_dict()))
 
 
 @Bank_main.route('/employees', methods=['GET'])
