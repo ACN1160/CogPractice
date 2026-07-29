@@ -6,4 +6,4 @@ class SavingsRepo:
         return savingsAcc.objects()
 
     def get_by_id(self, cus_id):
-        return savingsAcc.objects(id=cus_id)
+        return savingsAcc.objects(id=cus_id).first()
