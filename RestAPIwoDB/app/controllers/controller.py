@@ -17,20 +17,13 @@ def customer(id):
     return make_response(jsonify(customer.to_dict()))
 
 
-@Bank_main.route('/customers/add', methods=['POST'])
-def add_customer():
-    data = request.get_json()
-    if not data:
-        return jsonify({'error': 'No data provided'}), 400
-    created_customer = current_app.cus_service.add_customer(data)
-    return make_response(jsonify(created_customer.to_dict()), 201)
+@Bank_main.route('/customers/<string:firstname>/<string:lastname>/<string:customer>', methods=['POST', 'PUT'])
+def customer_action(firstname, lastname, customer):
+    if request.method == 'POST':
+        created_customer = current_app.cus_service.add_customer(firstname, lastname, customer)
+        return make_response(jsonify(created_customer.to_dict()), 201)
 
-@Bank_main.route('/customers/update/<string:id>', methods=['PUT'])
-def update_customer(id):
-    data = request.get_json()
-    if not data:
-        return make_response(jsonify({'error': 'No data provided'}), 400)
-    updated_customer = current_app.cus_service.update_customer(id, data)
+    updated_customer = current_app.cus_service.update_customer(firstname, lastname, customer)
     if updated_customer is None:
         abort(404)
     return make_response(jsonify(updated_customer.to_dict()))
