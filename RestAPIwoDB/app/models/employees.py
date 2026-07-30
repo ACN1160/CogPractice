@@ -16,4 +16,3 @@ class employees(Document):
             "email": self.email,
             "hired_date": str(self.hired_date),
         }
-

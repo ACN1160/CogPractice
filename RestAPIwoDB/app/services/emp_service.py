@@ -9,8 +9,8 @@ class EmployeeService:
         return self._repo.get_employee(employee_id)
 
     def add_employee(self, data):
-        first_name = data.get('firstname')
-        last_name = data.get('lastname')
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
         email = data.get('email')
         hired_date = data.get('hired_date')
 
@@ -23,8 +23,8 @@ class EmployeeService:
         return self._repo.add_employee(employee_data)
 
     def update_employee(self, employee_id, data):
-        first_name = data.get('firstname') if 'firstname' in data else None
-        last_name = data.get('lastname') if 'lastname' in data else None
+        first_name = data.get('first_name') if 'first_name' in data else None
+        last_name = data.get('last_name') if 'last_name' in data else None
         email = data.get('email') if 'email' in data else None
         hired_date = data.get('hired_date') if 'hired_date' in data else None
         return self._repo.update_employee(employee_id, first_name, last_name, email, hired_date)
