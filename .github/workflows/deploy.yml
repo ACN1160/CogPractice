@@ -48,11 +48,11 @@ jobs:
           node-version: "20"
 
       - name: Install frontend dependencies
-        working-directory: ./frontend
+        working-directory: .RestAPIwoDB/frontend
         run: npm ci
 
       - name: Build frontend
-        working-directory: ./frontend
+        working-directory: .RestAPIwoDB/frontend
         run: npm run build
 
       - name: Deploy frontend to S3
@@ -63,4 +63,4 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Sync dist to S3
-        run: aws s3 sync /frontend/dist s3://${{ secrets.S3_BUCKET_NAME }} --delete
+        run: aws s3 sync RestAPIwoDB/frontend/dist s3://${{ secrets.S3_BUCKET_NAME }} --delete
