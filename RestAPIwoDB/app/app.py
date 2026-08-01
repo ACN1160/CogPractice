@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from app.config import getconfig
 from app.controllers import Bank_main
 from app.repo.repo_checking import CheckingRepo
@@ -27,6 +28,7 @@ def create_app() -> Flask:
     app.check_service = CheckingService(app.checkings)
 
     init_db(app)
+    CORS(app)
 
     app.register_blueprint(Bank_main, url_prefix='/api/v1')
     return app
