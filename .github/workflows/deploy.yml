@@ -48,11 +48,11 @@ jobs:
           node-version: "20"
 
       - name: Install frontend dependencies
-        working-directory: .RestAPIwoDB/frontend
+        working-directory: ./RestAPIwoDB/frontend
         run: npm ci
 
       - name: Build frontend
-        working-directory: .RestAPIwoDB/frontend
+        working-directory: ./RestAPIwoDB/frontend
         run: npm run build
 
       - name: Deploy frontend to S3
