@@ -2,4 +2,4 @@ Flask
 python-dotenv
 gunicorn
 mongoengine
-aws-serverless-wsgi
+serverless-wsgi
