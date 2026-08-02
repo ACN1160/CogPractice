@@ -177,7 +177,7 @@ function EmployeeDashboard() {
                           <div className="account-menu-wrapper">
                             <button
                               onClick={() => setAccountMenu(accountMenu === customer.id ? null : customer.id)}
-                              className="action-button edit small"
+                              className="action-button add-account small"
                             >
                               + Account
                             </button>

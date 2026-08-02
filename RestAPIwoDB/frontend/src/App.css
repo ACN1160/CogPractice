@@ -103,22 +103,75 @@ th {
   gap: 0.5rem;
 }
 
-.action-button {
+.action-cell {
+  display: flex;
+  flex-direction: row;
+  gap: 0.4rem;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.account-menu-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  background: white;
+  border: 2px solid #7c3aed;
+  border-radius: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 100px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.dropdown-menu button {
+  padding: 0.4rem 0.75rem;
   border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.dropdown-menu button:hover {
+  background: #f3e8ff;
+}
+
+.action-button {
   border-radius: 0.5rem;
   padding: 0.4rem 0.7rem;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 2px solid #7c3aed;
+  white-space: nowrap;
 }
 
 .action-button.edit {
-  background: #e0f2fe;
-  color: #075985;
+  background: #fef08a;
+  color: #1a1a1a;
 }
 
 .action-button.delete {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: #ef4444;
+  color: #fff;
+}
+
+.action-button.add-account {
+  background: #22c55e;
+  color: #fff;
+}
+
+/* default (non-edit/delete/add-account) button */
+.action-button:not(.edit):not(.delete):not(.add-account) {
+  background: #f3e8ff;
+  color: #4c1d95;
 }
 
 .modal-overlay {
