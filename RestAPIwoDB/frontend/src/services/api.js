@@ -1,8 +1,19 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
+function authHeaders(extra = {}) {
+  const token = localStorage.getItem('access_token')
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...extra,
+  }
+}
+
 export async function fetchData(endpoint, fallbackData) {
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`)
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: authHeaders({ 'Content-Type': undefined }),
+    })
 
     if (!response.ok) {
       throw new Error(`Request failed with status ${response.status}`)
@@ -18,7 +29,7 @@ export async function fetchData(endpoint, fallbackData) {
 export async function postData(endpoint, body) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify(body),
   })
   if (!response.ok) {
@@ -43,7 +54,7 @@ export async function postLogin(endpoint, body) {
 export async function putData(endpoint, body) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify(body),
   })
   if (!response.ok) throw new Error(`Request failed with status ${response.status}`)
@@ -53,6 +64,7 @@ export async function putData(endpoint, body) {
 export async function deleteData(endpoint) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: 'DELETE',
+    headers: authHeaders({ 'Content-Type': undefined }),
   })
   if (!response.ok) throw new Error(`Request failed with status ${response.status}`)
 }

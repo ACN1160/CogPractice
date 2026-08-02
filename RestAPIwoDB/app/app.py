@@ -10,7 +10,7 @@ from app.services.check_service import CheckingService
 from app.services.cus_service import CustomerService
 from app.services.emp_service import EmployeeService
 from app.services.sav_service import SavingsService
-from app.extensions import init_db
+from app.extensions import init_db, jwt
 
 
 def create_app() -> Flask:
@@ -28,6 +28,7 @@ def create_app() -> Flask:
     app.check_service = CheckingService(app.checkings)
 
     init_db(app)
+    jwt.init_app(app)
     CORS(app)
 
     app.register_blueprint(Bank_main, url_prefix='/api/v1')

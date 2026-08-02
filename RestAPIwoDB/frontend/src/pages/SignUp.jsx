@@ -24,29 +24,8 @@ function SignUp({ onSwitchToLogin }) {
     setLoading(true)
 
     try {
-      // Use a direct fetch so a backend error isn't masked by the fallback
-      const res = await fetch('/api/v1/customers')
-      if (!res.ok) throw new Error(`Server error ${res.status}`)
-      const existingCustomers = await res.json()
-      
-      const usernameExists = existingCustomers.some(c => c.username === form.username)
-      const emailExists = existingCustomers.some(c => c.email === form.email)
-      
-      if (usernameExists) {
-        setError('Username already exists. Please choose a different username.')
-        setLoading(false)
-        return
-      }
-      
-      if (emailExists) {
-        setError('Email already exists. Please use a different email.')
-        setLoading(false)
-        return
-      }
-
-      // Create the customer account
       await postData('/api/v1/customers', form)
-      
+
       setSuccess('Account created successfully! You can now login.')
       setForm({
         username: '',
@@ -55,7 +34,7 @@ function SignUp({ onSwitchToLogin }) {
         last_name: '',
         email: '',
       })
-      
+
       // Switch to login after 2 seconds
       setTimeout(() => {
         onSwitchToLogin()
@@ -63,6 +42,8 @@ function SignUp({ onSwitchToLogin }) {
     } catch (err) {
       if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
         setError('Cannot reach the server. Make sure the backend is running.')
+      } else if (err.message.toLowerCase().includes('duplicate') || err.message.includes('11000')) {
+        setError('Username or email already exists. Please choose different values.')
       } else {
         setError(`Failed to create account: ${err.message}`)
       }
