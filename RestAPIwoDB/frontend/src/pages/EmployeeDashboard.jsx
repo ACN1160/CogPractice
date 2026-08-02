@@ -1,17 +1,68 @@
 import { useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
+import { postData } from '../services/api'
 
 function EmployeeDashboard() {
   const { user, userType, logout } = useContext(AuthContext)
   const navigate = useNavigate()
-  const [activePage, setActivePage] = useState('home') // 'home', 'customers', 'employees', 'savings', 'checking'
+  const [activePage, setActivePage] = useState('home')
+  const [customers, setCustomers] = useState([])
+  const [selectedCustomer, setSelectedCustomer] = useState('')
+  const [accountType, setAccountType] = useState('checking')
+  const [loadingCustomers, setLoadingCustomers] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   useEffect(() => {
     if (!user || userType !== 'employee') {
       navigate('/')
     }
   }, [user, userType, navigate])
+
+  useEffect(() => {
+    if (activePage === 'create-accounts') {
+      loadCustomers()
+    }
+  }, [activePage])
+
+  async function loadCustomers() {
+    try {
+      setLoadingCustomers(true)
+      const response = await fetch('/api/v1/customers', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setCustomers(data)
+      }
+    } catch (err) {
+      setError('Failed to load customers')
+      console.error(err)
+    } finally {
+      setLoadingCustomers(false)
+    }
+  }
+
+  async function handleCreateAccount() {
+    if (!selectedCustomer) {
+      setError('Please select a customer')
+      return
+    }
+
+    try {
+      setError('')
+      setSuccess('')
+      const endpoint = accountType === 'checking' ? '/api/v1/checkings' : '/api/v1/savings'
+      await postData(endpoint, { customer_id: selectedCustomer })
+      setSuccess(`${accountType.charAt(0).toUpperCase() + accountType.slice(1)} account created successfully!`)
+      setSelectedCustomer('')
+      setAccountType('checking')
+    } catch (err) {
+      setError(err.message || 'Failed to create account')
+      console.error(err)
+    }
+  }
 
   function handleLogout() {
     logout()
@@ -60,6 +111,49 @@ function EmployeeDashboard() {
             </button>
           </div>
         )
+      case 'create-accounts':
+        return (
+          <div className="page-content">
+            <h2>Create Customer Account</h2>
+            {error && <p className="error-message">{error}</p>}
+            {success && <p className="success-message">{success}</p>}
+            {loadingCustomers ? (
+              <p>Loading customers...</p>
+            ) : (
+              <div className="form-group">
+                <label>
+                  Select Customer:
+                  <select
+                    value={selectedCustomer}
+                    onChange={(e) => setSelectedCustomer(e.target.value)}
+                  >
+                    <option value="">-- Choose a customer --</option>
+                    {customers.map((customer) => (
+                      <option key={customer.id} value={customer.id}>
+                        {customer.first_name} {customer.last_name} ({customer.username})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  Account Type:
+                  <select
+                    value={accountType}
+                    onChange={(e) => setAccountType(e.target.value)}
+                  >
+                    <option value="checking">Checking Account</option>
+                    <option value="savings">Savings Account</option>
+                  </select>
+                </label>
+
+                <button onClick={handleCreateAccount} className="action-button edit">
+                  Create Account
+                </button>
+              </div>
+            )}
+          </div>
+        )
       default:
         return (
           <div className="page-content">
@@ -90,6 +184,12 @@ function EmployeeDashboard() {
             className={`nav-button ${activePage === 'home' ? 'active' : ''}`}
           >
             Home
+          </button>
+          <button
+            onClick={() => setActivePage('create-accounts')}
+            className={`nav-button ${activePage === 'create-accounts' ? 'active' : ''}`}
+          >
+            Create Accounts
           </button>
           <button
             onClick={() => setActivePage('customers')}

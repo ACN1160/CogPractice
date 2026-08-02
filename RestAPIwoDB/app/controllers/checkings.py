@@ -23,10 +23,13 @@ def checking(id):
     return make_response(jsonify(checking.to_dict()))
 
 
-@Bank_main.route('/checkings/<string:id>', methods=['POST'])
+@Bank_main.route('/checkings', methods=['POST'])
 @jwt_required()
-def add_checking(id):
-    created_checking = current_app.check_service.add_checking(id)
+def add_checking():
+    data = request.get_json()
+    if not data or 'customer_id' not in data:
+        return jsonify({'error': 'customer_id is required'}), 400
+    created_checking = current_app.check_service.add_checking(data['customer_id'])
     if created_checking is None:
         abort(404)
     return make_response(jsonify(created_checking.to_dict()), 201)

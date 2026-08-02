@@ -23,10 +23,13 @@ def saving(id):
     return make_response(jsonify(saving.to_dict()))
 
 
-@Bank_main.route('/savings/<string:id>', methods=['POST'])
+@Bank_main.route('/savings', methods=['POST'])
 @jwt_required()
-def add_saving(id):
-    created_saving = current_app.sav_service.add_saving(id)
+def add_saving():
+    data = request.get_json()
+    if not data or 'customer_id' not in data:
+        return jsonify({'error': 'customer_id is required'}), 400
+    created_saving = current_app.sav_service.add_saving(data['customer_id'])
     if created_saving is None:
         abort(404)
     return make_response(jsonify(created_saving.to_dict()), 201)
