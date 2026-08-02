@@ -8,6 +8,11 @@ def savings():
     savings = current_app.sav_service.get_savings()
     return make_response(jsonify([s.to_dict() for s in savings]))
 
+@Bank_main.route('/savings/customer/<string:id>', methods=['GET'])
+@jwt_required()
+def savings_by_customer(id):
+    savings_accounts = current_app.sav_service.get_savingbycustomer(id)
+    return make_response(jsonify([s.to_dict() for s in savings_accounts]))
 
 @Bank_main.route('/savings/<string:id>', methods=['GET'])
 @jwt_required()
@@ -16,12 +21,6 @@ def saving(id):
     if saving is None:
         abort(404)
     return make_response(jsonify(saving.to_dict()))
-
-@Bank_main.route('/savings/customer/<string:id>', methods=['GET'])
-@jwt_required()
-def savings_by_customer(id):
-    savings_accounts = current_app.sav_service.get_savingbycustomer(id)
-    return make_response(jsonify([s.to_dict() for s in savings_accounts]))
 
 
 @Bank_main.route('/savings/<string:id>', methods=['POST'])

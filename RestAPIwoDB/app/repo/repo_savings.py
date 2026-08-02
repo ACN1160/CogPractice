@@ -1,4 +1,5 @@
 from app.models.savingsAcc import savingsAcc
+from bson import ObjectId
 
 
 class SavingsRepo:
@@ -9,7 +10,7 @@ class SavingsRepo:
         return savingsAcc.objects(id=saving_id).first()
 
     def get_by_customer(self, customer_id):
-        return savingsAcc.objects(customer_id=customer_id)
+        return savingsAcc.objects(customer_id=ObjectId(customer_id))
 
     def add_saving(self, saving_data):
         saving = savingsAcc(**saving_data)

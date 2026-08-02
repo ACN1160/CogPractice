@@ -8,6 +8,11 @@ def checkings():
     checkings = current_app.check_service.get_checkings()
     return make_response(jsonify([c.to_dict() for c in checkings]))
 
+@Bank_main.route('/checkings/customer/<string:id>', methods=['GET'])
+@jwt_required()
+def checkings_by_customer(id):
+    checking_accounts = current_app.check_service.get_checkingbycustomer(id)
+    return make_response(jsonify([c.to_dict() for c in checking_accounts]))
 
 @Bank_main.route('/checkings/<string:id>', methods=['GET'])
 @jwt_required()
@@ -16,12 +21,6 @@ def checking(id):
     if checking is None:
         abort(404)
     return make_response(jsonify(checking.to_dict()))
-
-@Bank_main.route('/checkings/customer/<string:id>', methods=['GET'])
-@jwt_required()
-def checkings_by_customer(id):
-    checking_accounts = current_app.check_service.get_checkingbycustomer(id)
-    return make_response(jsonify([c.to_dict() for c in checking_accounts]))
 
 
 @Bank_main.route('/checkings/<string:id>', methods=['POST'])
