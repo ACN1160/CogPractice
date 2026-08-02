@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { postData } from '../services/api'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
+
 function EmployeeDashboard() {
   const { user, userType, logout } = useContext(AuthContext)
   const navigate = useNavigate()
@@ -36,7 +38,7 @@ function EmployeeDashboard() {
   async function loadCustomers() {
     try {
       setLoading(true)
-      const response = await fetch('/api/v1/customers', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/customers`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
       })
       if (response.ok) {
@@ -53,7 +55,7 @@ function EmployeeDashboard() {
   async function loadEmployees() {
     try {
       setLoading(true)
-      const response = await fetch('/api/v1/employees', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/employees`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
       })
       if (response.ok) {
@@ -70,7 +72,7 @@ function EmployeeDashboard() {
   async function loadCheckingAccounts() {
     try {
       setLoading(true)
-      const response = await fetch('/api/v1/checkings', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/checkings`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
       })
       if (response.ok) {
@@ -87,7 +89,7 @@ function EmployeeDashboard() {
   async function loadSavingsAccounts() {
     try {
       setLoading(true)
-      const response = await fetch('/api/v1/savings', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/savings`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
       })
       if (response.ok) {

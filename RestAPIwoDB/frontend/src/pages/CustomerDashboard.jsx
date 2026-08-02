@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { postData, putData } from '../services/api'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
+
 function CustomerDashboard() {
   const { user, userType, logout } = useContext(AuthContext)
   const navigate = useNavigate()
@@ -29,11 +31,11 @@ function CustomerDashboard() {
       const token = localStorage.getItem('access_token')
       console.log('Token available:', !!token)
 
-      const savingsRes = await fetch(`/api/v1/savings/customer/${user.id}`, {
+      const savingsRes = await fetch(`${API_BASE_URL}/api/v1/savings/customer/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       console.log('Savings response status:', savingsRes.status)
-      const checkingRes = await fetch(`/api/v1/checkings/customer/${user.id}`, {
+      const checkingRes = await fetch(`${API_BASE_URL}/api/v1/checkings/customer/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       console.log('Checking response status:', checkingRes.status)
