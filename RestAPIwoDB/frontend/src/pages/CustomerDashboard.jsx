@@ -25,22 +25,43 @@ function CustomerDashboard() {
     try {
       setLoading(true)
       setError('')
+      console.log('Loading accounts for user ID:', user.id)
+      const token = localStorage.getItem('access_token')
+      console.log('Token available:', !!token)
+
       const savingsRes = await fetch(`/api/v1/savings/customer/${user.id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+        headers: { Authorization: `Bearer ${token}` }
       })
+      console.log('Savings response status:', savingsRes.status)
       const checkingRes = await fetch(`/api/v1/checkings/customer/${user.id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+        headers: { Authorization: `Bearer ${token}` }
       })
+      console.log('Checking response status:', checkingRes.status)
 
       if (savingsRes.ok) {
-        setSavingsAccounts(await savingsRes.json())
+        const savingsData = await savingsRes.json()
+        console.log('Savings data:', savingsData)
+        setSavingsAccounts(savingsData)
+      } else if (savingsRes.status === 404) {
+        console.log('No savings accounts found (404)')
+        setSavingsAccounts([])
+      } else {
+        console.error('Savings error:', savingsRes.status)
       }
+
       if (checkingRes.ok) {
-        setCheckingAccounts(await checkingRes.json())
+        const checkingData = await checkingRes.json()
+        console.log('Checking data:', checkingData)
+        setCheckingAccounts(checkingData)
+      } else if (checkingRes.status === 404) {
+        console.log('No checking accounts found (404)')
+        setCheckingAccounts([])
+      } else {
+        console.error('Checking error:', checkingRes.status)
       }
     } catch (err) {
       setError('Failed to load accounts')
-      console.error(err)
+      console.error('Error loading accounts:', err)
     } finally {
       setLoading(false)
     }
