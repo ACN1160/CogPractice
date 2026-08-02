@@ -71,7 +71,7 @@ function Login({ onSwitchToSignup }) {
           />
         </label>
         {error && <p className="error-message">{error}</p>}
-        <button type="submit" disabled={loading} className="action-button edit">
+        <button type="submit" disabled={loading} className="action-button login">
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>

@@ -158,6 +158,11 @@ th {
   color: #1a1a1a;
 }
 
+.action-button.login {
+  background: #3b82f6;
+  color: #fff;
+}
+
 .action-button.delete {
   background: #ef4444;
   color: #fff;

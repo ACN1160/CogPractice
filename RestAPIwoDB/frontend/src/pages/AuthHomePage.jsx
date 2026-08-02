@@ -10,7 +10,7 @@ function AuthHomePage() {
     <div className="auth-container">
       <div className="auth-header">
         <p className="eyebrow">Welcome to</p>
-        <h1>Banking Portal</h1>
+        <h1>Simple Banking</h1>
         <p>Manage your accounts securely</p>
       </div>
       
