@@ -15,6 +15,19 @@ def employee(id):
     return make_response(jsonify(employee.to_dict()))
 
 
+@Bank_main.route('/employees/login', methods=['POST'])
+def login_employee():
+    data = request.get_json()
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({'error': 'Missing username or password'}), 400
+    
+    employee = current_app.emp_service.authenticate_employee(data['username'], data['password'])
+    if employee is None:
+        return jsonify({'error': 'Invalid credentials'}), 401
+    
+    return make_response(jsonify(employee.to_dict()), 200)
+
+
 @Bank_main.route('/employees', methods=['POST'])
 def add_employee():
     data = request.get_json()

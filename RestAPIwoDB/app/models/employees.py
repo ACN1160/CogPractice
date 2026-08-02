@@ -1,6 +1,8 @@
 from mongoengine import Document, StringField, BooleanField, DateTimeField
 
 class employees(Document):
+    username = StringField(required = True, max_length = 120, unique = True)
+    password = StringField(required = True, max_length = 120)
     first_name = StringField(required = True, max_length = 120)
     last_name = StringField(required = True, max_length = 120)
     email = StringField(required = True, unique = True, max_length = 120)
@@ -14,5 +16,7 @@ class employees(Document):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "email": self.email,
-            "hired_date": str(self.hired_date),
+            "hired_date": str(self.hired_date) if self.hired_date else None,
+            "username": self.username,
+            "password": self.password,
         }

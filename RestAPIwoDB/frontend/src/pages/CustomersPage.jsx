@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react'
 import { getCustomers, addCustomer, updateCustomer, deleteCustomer } from '../services/customerService'
 
-const EMPTY_FORM = { first_name: '', last_name: '', email: '' }
+const EMPTY_FORM = { first_name: '', last_name: '', email: '', username: '', password: '' }
 
 function CustomerModal({ customer, onClose, onSave }) {
-  const [form, setForm] = useState(customer ? { first_name: customer.first_name, last_name: customer.last_name, email: customer.email } : EMPTY_FORM)
+  const [form, setForm] = useState(customer ? { 
+    first_name: customer.first_name, 
+    last_name: customer.last_name, 
+    email: customer.email,
+    username: customer.username,
+    password: customer.password
+  } : EMPTY_FORM)
   const [error, setError] = useState('')
 
   function handleChange(e) {
@@ -38,6 +44,14 @@ function CustomerModal({ customer, onClose, onSave }) {
           <label>
             Email
             <input name="email" type="email" value={form.email} onChange={handleChange} required />
+          </label>
+          <label>
+            Username
+            <input name="username" value={form.username} onChange={handleChange} required />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" value={form.password} onChange={handleChange} required />
           </label>
           {error && <p className="modal-error">{error}</p>}
           <div className="modal-actions">

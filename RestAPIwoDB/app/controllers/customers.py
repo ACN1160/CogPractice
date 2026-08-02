@@ -15,6 +15,19 @@ def customer(id):
     return make_response(jsonify(customer.to_dict()))
 
 
+@Bank_main.route('/customers/login', methods=['POST'])
+def login_customer():
+    data = request.get_json()
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({'error': 'Missing username or password'}), 400
+    
+    customer = current_app.cus_service.authenticate_customer(data['username'], data['password'])
+    if customer is None:
+        return jsonify({'error': 'Invalid credentials'}), 401
+    
+    return make_response(jsonify(customer.to_dict()), 200)
+
+
 @Bank_main.route('/customers', methods=['POST'])
 def add_customer():
     data = request.get_json()

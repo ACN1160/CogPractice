@@ -8,12 +8,18 @@ class EmployeeRepo:
     def get_employee(self, emp_id):
         return employees.objects(id=emp_id).first()
 
+    def authenticate_employee(self, username, password):
+        employee = employees.objects(username=username).first()
+        if employee and employee.password == password:
+            return employee
+        return None
+
     def add_employee(self, employee_data):
         employee = employees(**employee_data)
         employee.save()
         return employee
 
-    def update_employee(self, emp_id, first_name=None, last_name=None, email=None, hired_date=None):
+    def update_employee(self, emp_id, first_name=None, last_name=None, email=None, hired_date=None, username=None, password=None):
         employee = employees.objects(id=emp_id).first()
         if employee is None:
             return None
@@ -25,6 +31,10 @@ class EmployeeRepo:
             employee.email = email
         if hired_date is not None:
             employee.hired_date = hired_date
+        if username is not None:
+            employee.username = username
+        if password is not None:
+            employee.password = password
         employee.save()
         return employee
 

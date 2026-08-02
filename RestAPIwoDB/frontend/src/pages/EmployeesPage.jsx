@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react'
 import { getEmployees, addEmployee, updateEmployee, deleteEmployee } from '../services/employeeService'
 
-const EMPTY_FORM = { first_name: '', last_name: '', email: '', hired_date: '' }
+const EMPTY_FORM = { first_name: '', last_name: '', email: '', hired_date: '', username: '', password: '' }
 
 function EmployeeModal({ employee, onClose, onSave }) {
   const [form, setForm] = useState(
     employee
-      ? { first_name: employee.first_name, last_name: employee.last_name, email: employee.email, hired_date: employee.hired_date ? employee.hired_date.slice(0, 10) : '' }
+      ? { 
+        first_name: employee.first_name, 
+        last_name: employee.last_name, 
+        email: employee.email, 
+        hired_date: employee.hired_date ? employee.hired_date.slice(0, 10) : '',
+        username: employee.username,
+        password: employee.password
+      }
       : EMPTY_FORM
   )
   const [error, setError] = useState('')
@@ -46,6 +53,14 @@ function EmployeeModal({ employee, onClose, onSave }) {
           <label>
             Hired Date
             <input name="hired_date" type="date" value={form.hired_date} onChange={handleChange} />
+          </label>
+          <label>
+            Username
+            <input name="username" value={form.username} onChange={handleChange} required />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" value={form.password} onChange={handleChange} required />
           </label>
           {error && <p className="modal-error">{error}</p>}
           <div className="modal-actions">

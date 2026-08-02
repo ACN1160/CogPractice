@@ -21,8 +21,23 @@ export async function postData(endpoint, body) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
-  if (!response.ok) throw new Error(`Request failed with status ${response.status}`)
+  if (!response.ok) {
+    let msg = `Request failed with status ${response.status}`
+    try { const errBody = await response.json(); msg = errBody.error || errBody.message || msg } catch {}
+    throw new Error(msg)
+  }
   return response.json()
+}
+
+// Returns { data, status } without throwing on 4xx so callers can check status
+export async function postLogin(endpoint, body) {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  const data = response.ok ? await response.json() : null
+  return { data, status: response.status }
 }
 
 export async function putData(endpoint, body) {
