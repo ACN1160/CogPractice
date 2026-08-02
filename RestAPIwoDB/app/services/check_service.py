@@ -8,6 +8,9 @@ class CheckingService:
     def get_checking(self, checking_id):
         return self._repo.get_by_id(checking_id)
 
+    def get_checkingbycustomer(self, customer_id):
+        return self._repo.get_by_customer(customer_id)
+
     def add_checking(self, id):
         customer_id = id
         if customer_id is None:
@@ -25,3 +28,19 @@ class CheckingService:
 
     def delete_checking(self, checking_id):
         return self._repo.delete_checking(checking_id)
+
+    def deposit_checking(self, checking_id, amount):
+        checking = self.get_checking(checking_id)
+        if checking is None:
+            return None
+        new_amount = checking.amount + amount
+        return self.update_checking(checking_id, {'amount': new_amount})
+
+    def withdraw_checking(self, checking_id, amount):
+        checking = self.get_checking(checking_id)
+        if checking is None:
+            return None
+        new_amount = checking.amount - amount
+        if new_amount < 0:
+            raise ValueError('Insufficient funds')
+        return self.update_checking(checking_id, {'amount': new_amount})

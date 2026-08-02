@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
-import { getCustomers } from '../services/customerService'
+import { postData, putData } from '../services/api'
 
 function CustomerDashboard() {
   const { user, userType, logout } = useContext(AuthContext)
@@ -9,10 +9,9 @@ function CustomerDashboard() {
   const [savingsAccounts, setSavingsAccounts] = useState([])
   const [checkingAccounts, setCheckingAccounts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selectedAccount, setSelectedAccount] = useState(null)
-  const [transactionAmount, setTransactionAmount] = useState('')
-  const [transactionType, setTransactionType] = useState('deposit')
+  const [transactionAmounts, setTransactionAmounts] = useState({})
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   useEffect(() => {
     if (!user || userType !== 'customer') {
@@ -24,24 +23,45 @@ function CustomerDashboard() {
 
   async function loadAccounts() {
     try {
-      // For now, this is a placeholder. You'll need to implement 
-      // proper account fetching for a specific customer
-      setLoading(false)
+      setLoading(true)
+      setError('')
+      const savingsRes = await fetch(`/api/v1/savings/customer/${user.id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+      })
+      const checkingRes = await fetch(`/api/v1/checkings/customer/${user.id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+      })
+
+      if (savingsRes.ok) {
+        setSavingsAccounts(await savingsRes.json())
+      }
+      if (checkingRes.ok) {
+        setCheckingAccounts(await checkingRes.json())
+      }
     } catch (err) {
       setError('Failed to load accounts')
       console.error(err)
+    } finally {
       setLoading(false)
     }
   }
 
   async function handleTransaction(accountId, amount, type, accountType) {
+    if (!amount || parseFloat(amount) <= 0) {
+      setError('Please enter a valid amount')
+      return
+    }
+
     try {
-      // API call would go here
-      // await withdrawFromAccount(accountId, amount, accountType) or depositToAccount...
-      alert(`${type} of $${amount} successful!`)
+      setError('')
+      setSuccess('')
+      const endpoint = `/api/v1/${accountType}s/${accountId}/${type}`
+      const response = await postData(endpoint, { amount: parseFloat(amount) })
+      setSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} of $${amount} successful!`)
+      setTransactionAmounts({ ...transactionAmounts, [accountId]: '' })
       await loadAccounts()
     } catch (err) {
-      setError('Transaction failed')
+      setError(err.message || 'Transaction failed')
       console.error(err)
     }
   }
@@ -66,28 +86,38 @@ function CustomerDashboard() {
       </header>
 
       {error && <p className="error-message">{error}</p>}
+      {success && <p className="success-message">{success}</p>}
 
       <div className="accounts-section">
         <h2>Your Accounts</h2>
-        
+
         <div className="accounts-grid">
           {savingsAccounts.length > 0 && (
-            <div className="account-card">
-              <h3>Savings Account</h3>
-              {savingsAccounts.map(account => (
-                <div key={account.id}>
-                  <p>Balance: ${account.balance}</p>
+            <div>
+              <h3>Savings Accounts ({savingsAccounts.length})</h3>
+              {savingsAccounts.map((account) => (
+                <div key={account.id} className="account-card">
+                  <p>Account ID: {account.id}</p>
+                  <p>Balance: ${account.amount?.toFixed(2)}</p>
                   <div className="transaction-form">
                     <input
                       type="number"
                       placeholder="Amount"
-                      value={transactionAmount}
-                      onChange={(e) => setTransactionAmount(e.target.value)}
+                      value={transactionAmounts[account.id] || ''}
+                      onChange={(e) => setTransactionAmounts({ ...transactionAmounts, [account.id]: e.target.value })}
+                      step="0.01"
+                      min="0"
                     />
-                    <button onClick={() => handleTransaction(account.id, transactionAmount, 'Withdraw', 'savings')} className="action-button">
+                    <button
+                      onClick={() => handleTransaction(account.id, transactionAmounts[account.id], 'withdraw', 'savings')}
+                      className="action-button"
+                    >
                       Withdraw
                     </button>
-                    <button onClick={() => handleTransaction(account.id, transactionAmount, 'Deposit', 'savings')} className="action-button edit">
+                    <button
+                      onClick={() => handleTransaction(account.id, transactionAmounts[account.id], 'deposit', 'savings')}
+                      className="action-button edit"
+                    >
                       Deposit
                     </button>
                   </div>
@@ -97,22 +127,31 @@ function CustomerDashboard() {
           )}
 
           {checkingAccounts.length > 0 && (
-            <div className="account-card">
-              <h3>Checking Account</h3>
-              {checkingAccounts.map(account => (
-                <div key={account.id}>
-                  <p>Balance: ${account.balance}</p>
+            <div>
+              <h3>Checking Accounts ({checkingAccounts.length})</h3>
+              {checkingAccounts.map((account) => (
+                <div key={account.id} className="account-card">
+                  <p>Account ID: {account.id}</p>
+                  <p>Balance: ${account.amount?.toFixed(2)}</p>
                   <div className="transaction-form">
                     <input
                       type="number"
                       placeholder="Amount"
-                      value={transactionAmount}
-                      onChange={(e) => setTransactionAmount(e.target.value)}
+                      value={transactionAmounts[account.id] || ''}
+                      onChange={(e) => setTransactionAmounts({ ...transactionAmounts, [account.id]: e.target.value })}
+                      step="0.01"
+                      min="0"
                     />
-                    <button onClick={() => handleTransaction(account.id, transactionAmount, 'Withdraw', 'checking')} className="action-button">
+                    <button
+                      onClick={() => handleTransaction(account.id, transactionAmounts[account.id], 'withdraw', 'checking')}
+                      className="action-button"
+                    >
                       Withdraw
                     </button>
-                    <button onClick={() => handleTransaction(account.id, transactionAmount, 'Deposit', 'checking')} className="action-button edit">
+                    <button
+                      onClick={() => handleTransaction(account.id, transactionAmounts[account.id], 'deposit', 'checking')}
+                      className="action-button edit"
+                    >
                       Deposit
                     </button>
                   </div>
@@ -131,3 +170,4 @@ function CustomerDashboard() {
 }
 
 export default CustomerDashboard
+

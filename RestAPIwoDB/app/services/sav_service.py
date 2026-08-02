@@ -10,6 +10,9 @@ class SavingsService:
     def get_saving(self, saving_id):
         return self._repo.get_by_id(saving_id)
 
+    def get_savingbycustomer(self, customer_id):
+        return self._repo.get_by_customer(customer_id)
+
     def add_saving(self, id):
         customer_id = id
         if customer_id is None:
@@ -32,3 +35,19 @@ class SavingsService:
 
     def delete_saving(self, saving_id):
         return self._repo.delete_saving(saving_id)
+
+    def deposit_saving(self, saving_id, amount):
+        saving = self.get_saving(saving_id)
+        if saving is None:
+            return None
+        new_amount = saving.amount + amount
+        return self.update_saving(saving_id, {'amount': new_amount})
+
+    def withdraw_saving(self, saving_id, amount):
+        saving = self.get_saving(saving_id)
+        if saving is None:
+            return None
+        new_amount = saving.amount - amount
+        if new_amount < 0:
+            raise ValueError('Insufficient funds')
+        return self.update_saving(saving_id, {'amount': new_amount})

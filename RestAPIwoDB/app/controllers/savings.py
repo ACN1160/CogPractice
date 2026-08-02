@@ -17,6 +17,12 @@ def saving(id):
         abort(404)
     return make_response(jsonify(saving.to_dict()))
 
+@Bank_main.route('/savings/customer/<string:id>', methods=['GET'])
+@jwt_required()
+def savings_by_customer(id):
+    savings_accounts = current_app.sav_service.get_savingbycustomer(id)
+    return make_response(jsonify([s.to_dict() for s in savings_accounts]))
+
 
 @Bank_main.route('/savings/<string:id>', methods=['POST'])
 @jwt_required()
@@ -46,3 +52,31 @@ def delete_saving(id):
     if deleted_saving is None:
         abort(404)
     return make_response('', 204)
+
+@Bank_main.route('/savings/<string:id>/deposit', methods=['POST'])
+@jwt_required()
+def deposit_saving(id):
+    data = request.get_json()
+    if not data or 'amount' not in data:
+        return jsonify({'error': 'Amount is required'}), 400
+    try:
+        updated = current_app.sav_service.deposit_saving(id, data['amount'])
+        if updated is None:
+            abort(404)
+        return make_response(jsonify(updated.to_dict()))
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+
+@Bank_main.route('/savings/<string:id>/withdraw', methods=['POST'])
+@jwt_required()
+def withdraw_saving(id):
+    data = request.get_json()
+    if not data or 'amount' not in data:
+        return jsonify({'error': 'Amount is required'}), 400
+    try:
+        updated = current_app.sav_service.withdraw_saving(id, data['amount'])
+        if updated is None:
+            abort(404)
+        return make_response(jsonify(updated.to_dict()))
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400

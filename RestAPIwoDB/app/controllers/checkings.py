@@ -17,6 +17,12 @@ def checking(id):
         abort(404)
     return make_response(jsonify(checking.to_dict()))
 
+@Bank_main.route('/checkings/customer/<string:id>', methods=['GET'])
+@jwt_required()
+def checkings_by_customer(id):
+    checking_accounts = current_app.check_service.get_checkingbycustomer(id)
+    return make_response(jsonify([c.to_dict() for c in checking_accounts]))
+
 
 @Bank_main.route('/checkings/<string:id>', methods=['POST'])
 @jwt_required()
@@ -46,3 +52,31 @@ def delete_checking(id):
     if deleted_checking is None:
         abort(404)
     return make_response('', 204)
+
+@Bank_main.route('/checkings/<string:id>/deposit', methods=['POST'])
+@jwt_required()
+def deposit_checking(id):
+    data = request.get_json()
+    if not data or 'amount' not in data:
+        return jsonify({'error': 'Amount is required'}), 400
+    try:
+        updated = current_app.check_service.deposit_checking(id, data['amount'])
+        if updated is None:
+            abort(404)
+        return make_response(jsonify(updated.to_dict()))
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+
+@Bank_main.route('/checkings/<string:id>/withdraw', methods=['POST'])
+@jwt_required()
+def withdraw_checking(id):
+    data = request.get_json()
+    if not data or 'amount' not in data:
+        return jsonify({'error': 'Amount is required'}), 400
+    try:
+        updated = current_app.check_service.withdraw_checking(id, data['amount'])
+        if updated is None:
+            abort(404)
+        return make_response(jsonify(updated.to_dict()))
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
